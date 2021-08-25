@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   }));
 
 
-function Eisenboard (props) {
+function EisenBoard (props) {
     const classes = useStyles();
     return (
         <Grid container direction="column" className={classes.root}>
@@ -40,4 +40,4 @@ function Eisenboard (props) {
     );
 }
 
-export default Eisenboard;
+export default EisenBoard;
