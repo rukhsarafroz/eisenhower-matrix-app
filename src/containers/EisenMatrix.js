@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import Eisenboard from "../components/Eisenboard";
 
 const useStyles = makeStyles(theme => ({
   content: {
@@ -12,7 +13,7 @@ function EisenMatrix() {
 
   return (
     <main className={classes.content}>
-        eisen matrix container
+        <Eisenboard />
     </main>
   );
 }
