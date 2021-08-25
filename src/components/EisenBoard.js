@@ -1,20 +1,16 @@
 import React from "react";
-import { Button, Grid } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import EisenBoardHeader from "./EisenBoardHeader";
+import Section from "./Section";
 
 const useStyles = makeStyles(theme => ({
     root: {
       padding: 20
     },
-    heading: {
-        fontSize: "24px",
-        color: "#3f51b5",
+    boards: {
         display: "flex",
         justifyContent: "center"
-    },
-    buttonGrid: {
-        display: "flex",
-        justifyContent: "flex-end"
     }
   }));
 
@@ -23,18 +19,16 @@ function EisenBoard (props) {
     const classes = useStyles();
     return (
         <Grid container direction="column" className={classes.root}>
-            <Grid item container>
-                <Grid item xs className={classes.heading}>
-                    EISENHOWER MATRIX
+            <EisenBoardHeader />
+            <Grid item xs={12} container direction="column">
+                <Grid item spacing={2} container className={classes.boards}>
+                    <Grid item><Section title="Urgent-Important"/></Grid>
+                    <Grid item><Section title="Urgent-Not-Important"/></Grid>
                 </Grid>
-                <Grid item xs={2} className={classes.buttonGrid}>
-                    <Button variant="contained" color="primary">
-                        ADD NEW TASK
-                    </Button>
+                <Grid item spacing={2} container className={classes.boards}>
+                    <Grid item><Section title="Not-Urgent-Important"/></Grid>
+                    <Grid item><Section title="Not-Urgent-Not-Important"/></Grid>
                 </Grid>
-            </Grid>
-            <Grid item>
-                sections
             </Grid>
         </Grid>
     );
