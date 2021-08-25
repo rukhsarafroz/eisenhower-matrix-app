@@ -18,13 +18,14 @@ const useStyles = makeStyles(theme => ({
 
 function EisenBoardHeader (props) {
     const classes = useStyles();
+    const { setDialogueState } = props;
     return (
             <Grid item container>
                 <Grid item xs className={classes.heading}>
                     EISENHOWER MATRIX
                 </Grid>
                 <Grid item xs={2} className={classes.buttonGrid}>
-                    <Button variant="contained" color="primary">
+                    <Button variant="contained" color="primary" onClick={() => { setDialogueState(true); }}>
                         ADD NEW TASK
                     </Button>
                 </Grid>
