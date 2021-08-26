@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import EisenBoardHeader from "./EisenBoardHeader";
 import Section from "./Section";
 import TaskForm from "./TaskForm";
+import { useDispatch, useSelector } from "react-redux";
+import { getTaskList } from "../actions/task";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -19,12 +21,29 @@ const useStyles = makeStyles(theme => ({
 function EisenBoard (props) {
     const classes = useStyles();
     const [dialogueState,setDialogueState] = useState(false);
+    const dispatch = useDispatch();
     const formState = {
         task_name: null,
         description: null,
         urgent: false,
         important: false,
     }
+
+    useEffect(() => {
+        dispatch(getTaskList());
+    }, [dispatch])
+
+    const {
+        tasklist,
+        sections
+      } = useSelector(
+        state => state.task
+      );
+
+    useEffect(() => {
+        console.log("tasklist",tasklist,"sections",sections);
+    }, [tasklist,sections])
+
     return (
         <Grid container direction="column" className={classes.root}>
             <EisenBoardHeader setDialogueState={setDialogueState}/>
