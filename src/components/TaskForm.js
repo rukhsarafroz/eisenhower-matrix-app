@@ -129,7 +129,7 @@ const TaskForm = props => {
     const [formState, setFormState] = useState(formValues);
 
     const handleChange = event => {
-        const value = event.target.checked || event.target.value;
+        const value = ["urgent","important"].includes(event.target.name) ? event.target.checked : event.target.value;
         setFormState({ ...formState, [event.target.name]:  value});
         console.log(formState);
     };
