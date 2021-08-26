@@ -17,6 +17,15 @@ const useStyles = makeStyles(theme => ({
     }
   }));
 
+  const Sections = props => {
+    const { section, taskMap, index, title } = props;
+		const tasks = section && taskMap && section.taskIds.map(
+			taskId => taskMap[taskId]
+		);
+    return (
+        <Section title={title} section={section} tasks={tasks} index={index} />
+    )
+  }
 
 function EisenBoard (props) {
     const classes = useStyles();
@@ -49,12 +58,44 @@ function EisenBoard (props) {
             <EisenBoardHeader setDialogueState={setDialogueState}/>
             <Grid item xs={12} container direction="column">
                 <Grid item spacing={2} container className={classes.boards}>
-                    <Grid item><Section title="Urgent-Important"/></Grid>
-                    <Grid item><Section title="Urgent-Not-Important"/></Grid>
+                    <Grid item>
+                        <Sections
+                            title="Urgent-Important"
+                            key="UrgentImportant"
+                            taskMap={tasklist}
+                            section={sections?.UrgentImportant}
+                            index={0}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Sections
+                            title="Urgent-Not-Important"
+                            key="UrgentImportant"
+                            taskMap={tasklist}
+                            section={sections?.UrgentNotImportant}
+                            index={1}
+                        />
+                    </Grid>
                 </Grid>
                 <Grid item spacing={2} container className={classes.boards}>
-                    <Grid item><Section title="Not-Urgent-Important"/></Grid>
-                    <Grid item><Section title="Not-Urgent-Not-Important"/></Grid>
+                    <Grid item>
+                        <Sections
+                            title="Not-Urgent-Important"
+                            key="NotUrgentImportant"
+                            taskMap={tasklist}
+                            section={sections?.NotUrgentImportant}
+                            index={0}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Sections
+                            title="Not-Urgent-Not-Important"
+                            key="NotUrgentNotImportant"
+                            taskMap={tasklist}
+                            section={sections?.NotUrgentNotImportant}
+                            index={1}
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
             {dialogueState && <TaskForm viewModeType={1} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={formState}/>}
