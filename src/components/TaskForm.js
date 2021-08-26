@@ -77,6 +77,46 @@ const useStyles = makeStyles(theme => ({
       },
 }));
 
+const FormHeader = props => {
+    const classes = useStyles();
+    const { viewModeType, setDialogueState } = props;
+    return(
+        <Toolbar className={classes.toolbar}>
+            <Typography variant="h6" className={classes.dialogueTitle}>
+                {viewModeType === 1 ? "New Task" : "Edit Task"}
+            </Typography>
+            <IconButton
+                color="inherit"
+                onClick={() => {
+                    setDialogueState(false);
+                }}
+                aria-label="close"
+                style={{ marginLeft: "auto" }}
+            >
+                <Close />
+            </IconButton>
+        </Toolbar>
+    );
+}
+
+const DialogAction = props => {
+    const classes = useStyles();
+    const { viewModeType } = props;
+    return (
+        <DialogActions className={classes.dialogAction}>
+            <Button
+                size="medium"
+                variant="contained"
+                type="submit"
+                className={classes.button}
+                color="primary"
+            >
+                    {viewModeType === 1 ? "Add Task" : "Update Task"}
+            </Button>
+        </DialogActions>
+    );
+}
+
 const TaskForm = props => {
     const classes = useStyles();
     const {
@@ -107,21 +147,7 @@ const TaskForm = props => {
                     onSubmit(formState);
                 }}
             >
-                <Toolbar className={classes.toolbar}>
-                    <Typography variant="h6" className={classes.dialogueTitle}>
-                        {viewModeType === 1 ? "New Task" : "Edit Task"}
-                    </Typography>
-                    <IconButton
-                        color="inherit"
-                        onClick={() => {
-                            setDialogueState(false);
-                        }}
-                        aria-label="close"
-                        style={{ marginLeft: "auto" }}
-                    >
-                        <Close />
-                    </IconButton>
-                </Toolbar>
+                <FormHeader setDialogueState={setDialogueState} viewModeType={viewModeType} />
                 <DialogContent dividers className={classes.dialogContent}>
                     <Grid container>
                         <Grid item container spacing={2} direction="column">
@@ -185,17 +211,7 @@ const TaskForm = props => {
                          </Grid>
                         </Grid>
                 </DialogContent>
-                <DialogActions className={classes.dialogAction}>
-                    <Button
-                        size="medium"
-                        variant="contained"
-                        type="submit"
-                        className={classes.button}
-                        color="primary"
-                    >
-                            {viewModeType === 1 ? "Add Task" : "Update Task"}
-                    </Button>
-                </DialogActions>
+                <DialogAction viewModeType={viewModeType} />
             </form>
         </Dialog>
     );
