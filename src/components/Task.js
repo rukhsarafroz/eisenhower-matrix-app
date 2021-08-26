@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
+import { Draggable } from "react-beautiful-dnd";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -21,13 +22,26 @@ const useStyles = makeStyles(theme => ({
 
 function Task (props) {
     const classes = useStyles();
-    const { isDragging, task } = props;
+    const { task, index } = props;
         return (
-            <Grid item className={classes.container} style={{backgroundColor: isDragging? 'lightgreen' : 'white'}}>
-                <div className={classes.content}>
-                    {task.task_name}
-                </div>
-            </Grid>
+            <Draggable key={task.id} isDragDisabled={false} draggableId={task.id} index={index}>
+                {
+                    (provided, snapshot) => (
+                        <Grid
+                            item
+                            className={classes.container}
+                            {...provided.dragHandleProps}
+                            {...provided.draggableProps}
+                            ref={provided.innerRef}
+                            style={{backgroundColor: snapshot.isDragging? 'lightgreen' : 'white', ...provided.draggableProps.style}}
+                        >
+                            <div className={classes.content}>
+                                {task.task_name}
+                            </div>
+                        </Grid>
+                    )
+                }
+            </Draggable>
         );
     }
 

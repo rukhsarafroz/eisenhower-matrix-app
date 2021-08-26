@@ -5,7 +5,8 @@ import EisenBoardHeader from "./EisenBoardHeader";
 import Section from "./Section";
 import TaskForm from "./TaskForm";
 import { useDispatch, useSelector } from "react-redux";
-import { getTaskList } from "../actions/task";
+import { getTaskList, reorderTaskInDifferentSection, reorderTaskInSameSection } from "../actions/task";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -53,50 +54,107 @@ function EisenBoard (props) {
         console.log("tasklist",tasklist,"sections",sections);
     }, [tasklist,sections])
 
+    const onDragEnd = (result) => {
+        const { destination, source, draggableId } = result;
+
+        // if destination is not a droppable, do nothing
+        if(!destination)return;
+
+        if(destination==="Complete"){
+            console.log("Complete");
+        }
+
+        // if element is dropped right back to its place, do nothing
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) {return;}
+
+        // If draggable dropped in same droppable, but different position
+        if(source.droppableId === destination.droppableId){
+            dispatch(reorderTaskInSameSection(source.index,
+                destination.index,
+                source.droppableId,
+                draggableId
+            ));
+            return;
+        }
+
+        //If draggable dropped in another droppable
+        dispatch(reorderTaskInDifferentSection(
+            source.index,
+            destination.index,
+            source.droppableId,
+            destination.droppableId,
+            draggableId
+        ));
+        return;
+    }
+
     return (
         <Grid container direction="column" className={classes.root}>
             <EisenBoardHeader setDialogueState={setDialogueState}/>
             <Grid item xs={12} container direction="column">
-                <Grid item spacing={2} container className={classes.boards}>
-                    <Grid item>
-                        <Sections
-                            title="Urgent-Important"
-                            key="UrgentImportant"
-                            taskMap={tasklist}
-                            section={sections?.UrgentImportant}
-                            index={0}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Sections
-                            title="Urgent-Not-Important"
-                            key="UrgentImportant"
-                            taskMap={tasklist}
-                            section={sections?.UrgentNotImportant}
-                            index={1}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid item spacing={2} container className={classes.boards}>
-                    <Grid item>
-                        <Sections
-                            title="Not-Urgent-Important"
-                            key="NotUrgentImportant"
-                            taskMap={tasklist}
-                            section={sections?.NotUrgentImportant}
-                            index={0}
-                        />
-                    </Grid>
-                    <Grid item>
-                        <Sections
-                            title="Not-Urgent-Not-Important"
-                            key="NotUrgentNotImportant"
-                            taskMap={tasklist}
-                            section={sections?.NotUrgentNotImportant}
-                            index={1}
-                        />
-                    </Grid>
-                </Grid>
+            <DragDropContext onDragEnd={onDragEnd} >
+                <Droppable droppableId="Urgent" direction="horizontal" type="column">
+                        {
+                            (provided) => {
+                                return (
+                                    <Grid item spacing={2} container className={classes.boards} {...provided.droppableProps} ref={provided.innerRef}>
+                                        <Grid item>
+                                            <Sections
+                                                title="Urgent-Important"
+                                                key="UrgentImportant"
+                                                taskMap={tasklist}
+                                                section={sections?.UrgentImportant}
+                                                index={0}
+                                            />
+                                        </Grid>
+                                        <Grid item>
+                                            <Sections
+                                                title="Urgent-Not-Important"
+                                                key="UrgentImportant"
+                                                taskMap={tasklist}
+                                                section={sections?.UrgentNotImportant}
+                                                index={1}
+                                            />
+                                        </Grid>
+                                        {provided.placeholder}
+                                    </Grid>
+                                )
+                            }
+                        }
+                    </Droppable>
+                    <Droppable droppableId="Urgent" direction="horizontal" type="column">
+                        {
+                            (provided) => {
+                                return (
+                                    <Grid item spacing={2} container className={classes.boards} {...provided.droppableProps} ref={provided.innerRef}>
+                                        <Grid item>
+                                            <Sections
+                                                title="Not-Urgent-Important"
+                                                key="NotUrgentImportant"
+                                                taskMap={tasklist}
+                                                section={sections?.NotUrgentImportant}
+                                                index={0}
+                                            />
+                                        </Grid>
+                                        <Grid item>
+                                            <Sections
+                                                title="Not-Urgent-Not-Important"
+                                                key="NotUrgentNotImportant"
+                                                taskMap={tasklist}
+                                                section={sections?.NotUrgentNotImportant}
+                                                index={1}
+                                            />
+                                        </Grid>
+                                        {provided.placeholder}
+                                    </Grid>
+                                )
+                            }
+                        }
+                    </Droppable>
+            </DragDropContext>
             </Grid>
             {dialogueState && <TaskForm viewModeType={1} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={formState}/>}
         </Grid>

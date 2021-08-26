@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import Task from "./Task";
+import { Droppable } from "react-beautiful-dnd";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -31,25 +32,32 @@ const useStyles = makeStyles(theme => ({
 
 function Section (props) {
     const classes = useStyles();
-    const { title, isDraggingOver, isDragging, tasks } = props;
+    const { title, section, tasks } = props;
         return (
             <Grid container direction="column" className={classes.container} >
                 <Grid item xs={12} className={classes.title}>
                    {title}
                 </Grid>
-                <Grid
-                    item
-                    container
-                    direction="column"
-                    className={classes.tasklist}
-                    style={{ backgroundColor: isDraggingOver ? 'lightgrey' : 'inherit'}}
-                >
-                    {
-                        tasks && tasks.map(task => {
-                            return <Task key={task.id} task={task} isDragging={isDragging} />
-                        })
-                    }
-                </Grid>
+                <Droppable droppableId={section.id} type="task">
+                    {(provided, snapshot) => (
+                        <Grid
+                            item
+                            container
+                            direction="column"
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={classes.tasklist}
+                            style={{ backgroundColor: snapshot.isDraggingOver ? 'lightgrey' : 'inherit'}}
+                        >
+                            {
+                                tasks && tasks.map((task,index) => {
+                                    return <Task key={task.id} task={task} index={index} />
+                                })
+                            }
+                            {provided.placeholder}
+                        </Grid>
+                    )}
+                </Droppable>
             </Grid>
         );
     }
