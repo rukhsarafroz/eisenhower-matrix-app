@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { ADD_NEW_TASK, DND_IN_DIFFERENT_SECTION, DND_IN_SAME_SECTION, GET_TASK_LIST } from "../constants/ActionTypes";
+import { ADD_NEW_TASK, DELETE_TASK, DND_IN_DIFFERENT_SECTION, DND_IN_SAME_SECTION, EDIT_TASK, GET_TASK_LIST } from "../constants/ActionTypes";
 import initialData from "../mockData/initialData";
 
 const initialState = {
@@ -67,6 +67,34 @@ const task = (state = initialState, action) => {
                     tasklist: tasklist,
                     sections : sections,
                 }
+            }
+        case EDIT_TASK:
+            {
+                let newTaskList = cloneDeep(state.tasklist);
+                newTaskList[action.providedData.id] = action.providedData;
+
+                return {
+                    ...state,
+                    tasklist: newTaskList
+                };
+            }
+        case DELETE_TASK:
+            {
+                const id = action.providedData.id;
+                let newTaskList = cloneDeep(state.tasklist);
+                delete newTaskList[id];
+
+                let newSections = cloneDeep(state.sections);
+                newSections.NotUrgentImportant.taskIds = newSections.NotUrgentImportant.taskIds.filter(value => value !== id);
+                newSections.UrgentImportant.taskIds = newSections.UrgentImportant.taskIds.filter(value => value !== id);
+                newSections.NotUrgentNotImportant.taskIds = newSections.NotUrgentNotImportant.taskIds.filter(value => value !== id);
+                newSections.UrgentNotImportant.taskIds = newSections.UrgentNotImportant.taskIds.filter(value => value !== id);
+
+                return {
+                    ...state,
+                    tasklist: newTaskList,
+                    sections: newSections,
+                };
             }
         default:
             return state;
