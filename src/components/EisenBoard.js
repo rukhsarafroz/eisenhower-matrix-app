@@ -5,8 +5,9 @@ import EisenBoardHeader from "./EisenBoardHeader";
 import Section from "./Section";
 import TaskForm from "./TaskForm";
 import { useDispatch, useSelector } from "react-redux";
-import { getTaskList, reorderTaskInDifferentSection, reorderTaskInSameSection } from "../actions/task";
+import { addNewTask, getTaskList, reorderTaskInDifferentSection, reorderTaskInSameSection } from "../actions/task";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { v4 as uuid } from 'uuid';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -91,6 +92,26 @@ function EisenBoard (props) {
         return;
     }
 
+    const onSubmit = (formValues) => {
+        console.log("formvalues",formValues);
+        const urgent = formValues.urgent;
+        const important = formValues.important;
+
+        //Determine which section to put the task in
+        let targetSection = "";
+        if (!urgent){
+            targetSection += "Not";
+        }
+        targetSection += "Urgent";
+        if (!important){
+            targetSection += "Not";
+        }
+        targetSection += "Important";
+        const taskID = 'task-'+ uuid();
+
+        dispatch(addNewTask(taskID, targetSection, formValues.task_name, formValues.description));
+    }
+
     return (
         <Grid container direction="column" className={classes.root}>
             <EisenBoardHeader setDialogueState={setDialogueState}/>
@@ -156,7 +177,7 @@ function EisenBoard (props) {
                     </Droppable>
             </DragDropContext>
             </Grid>
-            {dialogueState && <TaskForm viewModeType={1} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={formState}/>}
+            {dialogueState && <TaskForm viewModeType={1} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={formState} onSubmit={onSubmit}/>}
         </Grid>
     );
 }

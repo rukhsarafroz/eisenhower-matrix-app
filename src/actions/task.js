@@ -1,4 +1,4 @@
-import { DND_IN_DIFFERENT_SECTION, DND_IN_SAME_SECTION, GET_TASK_LIST } from "../constants/ActionTypes";
+import { ADD_NEW_TASK, DND_IN_DIFFERENT_SECTION, DND_IN_SAME_SECTION, GET_TASK_LIST } from "../constants/ActionTypes";
 
 export const getTaskList = () => async dispatch => {
     dispatch({ type: GET_TASK_LIST });
@@ -23,6 +23,16 @@ export const reorderTaskInDifferentSection = (sourceIndex, destinationIndex, sou
         sourceDroppableID : sourceDroppableID,
         destinationDroppableID : destinationDroppableID,
         draggableId : draggableId
+    }
+    })
+}
+
+export const addNewTask = (taskID, targetSection, task_name, description) => async dispatch => {
+    dispatch({type : ADD_NEW_TASK, providedData : {
+        taskID : taskID,
+        targetSection : targetSection,
+        task_name:task_name,
+        description : description
     }
     })
 }

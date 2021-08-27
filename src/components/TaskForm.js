@@ -145,6 +145,7 @@ const TaskForm = props => {
                 onSubmit={event => {
                     event.preventDefault();
                     onSubmit(formState);
+                    setDialogueState(false);
                 }}
             >
                 <FormHeader setDialogueState={setDialogueState} viewModeType={viewModeType} />
