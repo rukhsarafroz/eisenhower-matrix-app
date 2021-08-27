@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { deleteTask, editTask } from "../actions/task";
 import MoreHorizMenu from "./MoreHorizMenu";
 import TaskForm from "./TaskForm";
+import ConfirmationPopup from "./ConfirmationPopup";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -38,6 +39,7 @@ function Task (props) {
     const dispatch = useDispatch();
     const [currentTask, setCurrentTask] = useState(task);
     const [dialogueState, setDialogueState] = useState(false);
+    const [deletePopupState, setDeletePopupState] = useState(false);
 
     const handleSubmitEditedTask = (formValues) => {
         dispatch(editTask(formValues));
@@ -51,6 +53,10 @@ function Task (props) {
         setDialogueState(true);
     }
 
+    const handleDeleteDialogue = (event) => {
+        setDeletePopupState(true);
+    }
+
     const handleDeleteTask = (event) => {
         event.preventDefault();
         dispatch(deleteTask(currentTask.id));
@@ -58,7 +64,7 @@ function Task (props) {
 
     const menuList = [
         { name: "Edit Task", actionHandler: handleDiagloue },
-        { name: "Delete Task", actionHandler: handleDeleteTask },
+        { name: "Delete Task", actionHandler: handleDeleteDialogue },
       ]
         return (
             <Fragment>
@@ -84,6 +90,7 @@ function Task (props) {
                         )
                     }
                 </Draggable>
+                <ConfirmationPopup popupState={deletePopupState} setPopupState={setDeletePopupState} handleConfirmationAction={handleDeleteTask} title={"Delete this Task"} messageToDisplay={"Are you sure you want to delete"} confirmationBtnText={"Delete"} />
                 {dialogueState && <TaskForm viewModeType={2} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={currentTask} onSubmit={handleSubmitEditedTask}/>}
             </Fragment>
         );
