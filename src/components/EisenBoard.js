@@ -5,8 +5,11 @@ import EisenBoardHeader from "./EisenBoardHeader";
 import Section from "./Section";
 import TaskForm from "./TaskForm";
 import { useDispatch, useSelector } from "react-redux";
-import { getTaskList, reorderTaskInDifferentSection, reorderTaskInSameSection } from "../actions/task";
+import { addNewTask, getTaskList, reorderTaskInDifferentSection, reorderTaskInSameSection } from "../actions/task";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { v4 as uuid } from 'uuid';
+import { useSnackbar } from "notistack";
+import { CLEAR_REDUCER } from "../constants/ActionTypes";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -32,6 +35,7 @@ function EisenBoard (props) {
     const classes = useStyles();
     const [dialogueState,setDialogueState] = useState(false);
     const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
     const formState = {
         task_name: null,
         description: null,
@@ -45,14 +49,21 @@ function EisenBoard (props) {
 
     const {
         tasklist,
-        sections
+        sections,
+        addTaskSuccess,
+        deleteTaskSuccess,
+        editTaskSuccess,
+        message
       } = useSelector(
         state => state.task
       );
 
-    useEffect(() => {
-        console.log("tasklist",tasklist,"sections",sections);
-    }, [tasklist,sections])
+      useEffect(() => {
+        if(addTaskSuccess || editTaskSuccess || deleteTaskSuccess){
+              enqueueSnackbar(message, { variant: "success" });
+              dispatch({ type: CLEAR_REDUCER })
+        }
+    }, [addTaskSuccess, editTaskSuccess, deleteTaskSuccess])
 
     const onDragEnd = (result) => {
         const { destination, source, draggableId } = result;
@@ -89,6 +100,26 @@ function EisenBoard (props) {
             draggableId
         ));
         return;
+    }
+
+    const onSubmit = (formValues) => {
+        console.log("formvalues",formValues);
+        const urgent = formValues.urgent;
+        const important = formValues.important;
+
+        //Determine which section to put the task in
+        let targetSection = "";
+        if (!urgent){
+            targetSection += "Not";
+        }
+        targetSection += "Urgent";
+        if (!important){
+            targetSection += "Not";
+        }
+        targetSection += "Important";
+        const taskID = 'task-'+ uuid();
+
+        dispatch(addNewTask(taskID, targetSection, formValues.task_name, formValues.description));
     }
 
     return (
@@ -156,7 +187,7 @@ function EisenBoard (props) {
                     </Droppable>
             </DragDropContext>
             </Grid>
-            {dialogueState && <TaskForm viewModeType={1} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={formState}/>}
+            {dialogueState && <TaskForm viewModeType={1} dialogueState={dialogueState} setDialogueState={setDialogueState} formValues={formState} onSubmit={onSubmit}/>}
         </Grid>
     );
 }

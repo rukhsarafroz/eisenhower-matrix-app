@@ -145,6 +145,7 @@ const TaskForm = props => {
                 onSubmit={event => {
                     event.preventDefault();
                     onSubmit(formState);
+                    setDialogueState(false);
                 }}
             >
                 <FormHeader setDialogueState={setDialogueState} viewModeType={viewModeType} />
@@ -184,7 +185,7 @@ const TaskForm = props => {
                                     style={{ marginBottom: "18px" }}
                                 />
                             </Grid>
-                            <Grid item container>
+                            <Grid item container style={{ display: viewModeType == 1 ? "flex" : "none"}}>
                                 <FormControlLabel
                                     control={
                                     <Checkbox
