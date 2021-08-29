@@ -1,5 +1,5 @@
 import { cloneDeep } from "lodash";
-import { ADD_NEW_TASK, DELETE_TASK, DND_IN_DIFFERENT_SECTION, DND_IN_SAME_SECTION, EDIT_TASK, GET_TASK_LIST } from "../constants/ActionTypes";
+import { ADD_NEW_TASK, CLEAR_REDUCER, DELETE_TASK, DND_IN_DIFFERENT_SECTION, DND_IN_SAME_SECTION, EDIT_TASK, GET_TASK_LIST } from "../constants/ActionTypes";
 import initialData from "../mockData/initialData";
 
 const initialState = {
@@ -66,6 +66,8 @@ const task = (state = initialState, action) => {
                     ...state,
                     tasklist: tasklist,
                     sections : sections,
+                    addTaskSuccess: true,
+                    message: "Task Added Successfully"
                 }
             }
         case EDIT_TASK:
@@ -75,7 +77,9 @@ const task = (state = initialState, action) => {
 
                 return {
                     ...state,
-                    tasklist: newTaskList
+                    tasklist: newTaskList,
+                    editTaskSuccess: true,
+                    message: "Task Edited Successfully"
                 };
             }
         case DELETE_TASK:
@@ -94,7 +98,16 @@ const task = (state = initialState, action) => {
                     ...state,
                     tasklist: newTaskList,
                     sections: newSections,
+                    deleteTaskSuccess: true,
+                    message: "Task Deleted Successfully"
                 };
+            }
+        case CLEAR_REDUCER:
+            return {
+                ...state,
+                addTaskSuccess: false,
+                editTaskSuccess: false,
+                deleteTaskSuccess: false,
             }
         default:
             return state;

@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addNewTask, getTaskList, reorderTaskInDifferentSection, reorderTaskInSameSection } from "../actions/task";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { v4 as uuid } from 'uuid';
+import { useSnackbar } from "notistack";
+import { CLEAR_REDUCER } from "../constants/ActionTypes";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -33,6 +35,7 @@ function EisenBoard (props) {
     const classes = useStyles();
     const [dialogueState,setDialogueState] = useState(false);
     const dispatch = useDispatch();
+    const { enqueueSnackbar } = useSnackbar();
     const formState = {
         task_name: null,
         description: null,
@@ -46,14 +49,21 @@ function EisenBoard (props) {
 
     const {
         tasklist,
-        sections
+        sections,
+        addTaskSuccess,
+        deleteTaskSuccess,
+        editTaskSuccess,
+        message
       } = useSelector(
         state => state.task
       );
 
-    useEffect(() => {
-        console.log("tasklist",tasklist,"sections",sections);
-    }, [tasklist,sections])
+      useEffect(() => {
+        if(addTaskSuccess || editTaskSuccess || deleteTaskSuccess){
+              enqueueSnackbar(message, { variant: "success" });
+              dispatch({ type: CLEAR_REDUCER })
+        }
+    }, [addTaskSuccess, editTaskSuccess, deleteTaskSuccess])
 
     const onDragEnd = (result) => {
         const { destination, source, draggableId } = result;
