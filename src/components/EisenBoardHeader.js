@@ -21,10 +21,10 @@ function EisenBoardHeader (props) {
     const { setDialogueState } = props;
     return (
             <Grid item container>
-                <Grid item xs className={classes.heading}>
+                <Grid item xs md className={classes.heading}>
                     EISENHOWER MATRIX
                 </Grid>
-                <Grid item xs={2} className={classes.buttonGrid}>
+                <Grid item xs={4} md={2} className={classes.buttonGrid}>
                     <Button variant="contained" color="primary" onClick={() => { setDialogueState(true); }}>
                         ADD NEW TASK
                     </Button>
