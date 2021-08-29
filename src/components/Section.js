@@ -36,7 +36,7 @@ function Section (props) {
         return (
             <Grid container direction="column" className={classes.container} >
                 <Grid item xs={12} className={classes.title}>
-                   {title}
+                    {tasks && tasks.length ? `${title} - ${tasks.length}` : title}
                 </Grid>
                 <Droppable droppableId={section.id} type="task">
                     {(provided, snapshot) => (
