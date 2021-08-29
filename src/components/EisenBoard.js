@@ -15,10 +15,6 @@ const useStyles = makeStyles(theme => ({
     root: {
       padding: 20
     },
-    boards: {
-        display: "flex",
-        justifyContent: "center"
-    }
   }));
 
 function EisenBoard (props) {
