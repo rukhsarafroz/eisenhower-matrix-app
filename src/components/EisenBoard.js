@@ -98,21 +98,26 @@ function EisenBoard (props) {
 
         // If draggable dropped in same droppable, but different position
         if(source.droppableId === destination.droppableId){
-            dispatch(reorderTaskInSameSection(source.index,
-                destination.index,
-                source.droppableId,
-                draggableId
+            dispatch(reorderTaskInSameSection(
+                {
+                    sourceIndex: source.index,
+                    destinationIndex: destination.index,
+                    sectionID: source.droppableId,
+                    draggableId
+                }
             ));
             return;
         }
 
         //If draggable dropped in another droppable
         dispatch(reorderTaskInDifferentSection(
-            source.index,
-            destination.index,
-            source.droppableId,
-            destination.droppableId,
-            draggableId
+            {
+                sourceIndex: source.index,
+                destinationIndex: destination.index,
+                sourceDroppableID: source.droppableId,
+                destinationDroppableID: destination.droppableId,
+                draggableId
+            }
         ));
         return;
     }
@@ -134,7 +139,14 @@ function EisenBoard (props) {
         targetSection += "Important";
         const taskID = 'task-'+ uuid();
 
-        dispatch(addNewTask(taskID, targetSection, formValues.task_name, formValues.description));
+        dispatch(addNewTask(
+            {
+                taskID,
+                targetSection,
+                task_name: formValues.task_name,
+                description: formValues.description
+            }
+        ));
     }
 
     return (
